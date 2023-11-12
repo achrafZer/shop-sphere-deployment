@@ -2,21 +2,24 @@ services:
 
   backend:
     image: maven:3.8.3-openjdk-17
-    working_dir: /backend
-    command: bash -c "mvn spring-boot:run"
     volumes:
       - ./backend/:/backend
+    working_dir: /backend
+    command: bash -c "mvn spring-boot:run -Pprod"
+    
     ports:
       - 8080:8080
 
   frontend:
-    image: node:18
-    depends_on:
-      - backend
-    working_dir: /frontend
-    command: bash -c "apt update && apt-get -y install default-jre && npm install && npm run start -y"
-    ports:
-      - 8002:4200
+    image: node:latest
     volumes:
       - ./frontend/:/frontend
+    working_dir: /frontend
+    depends_on:
+      - backend
+    ports:
+      - 4200:4200
+    command: bash -c "apt update && apt-get -y install default-jre && npm install && npm run start -y"
+
+    
 
